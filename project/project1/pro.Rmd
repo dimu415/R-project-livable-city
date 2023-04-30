@@ -1,0 +1,75 @@
+---
+title: "project"
+output: html_document
+date: "2023-04-30"
+---
+# 자녀를 가진 부모가 살기 좋은 서울 자치구구 Top10 
+```{r source, include=FALSE}
+source('lib.r')
+source('project.r')
+
+pi2<-function(df,x,y){
+ 
+  df$lab=paste(round(((y/sum(y))*100),2),"%")
+  
+  plt=ggplot(df,aes(x=1,y=y,fill=x))
+  pl=plt+coord_polar(theta = 'y')+theme_void()
+  pl=pl+geom_bar(stat = "identity")
+  pl=pl+geom_text(size=2,
+                  aes(label =lab),
+                  position=position_stack(vjust = 0.5)
+  )
+  
+  return(pl)
+}
+```
+
+# 범죄 시각화
+```{r crime}
+ggplot(crime,aes(x=q,y=w,fill=e))+geom_col(position = 'dodge')+
+  theme(axis.text.x=element_text(angle=90, hjust=1))
+```
+Top 10 
+```{r Top10}
+ggplot(df3,aes(x=reorder(자치구,가중치평균),y=가중치평균,fill=자치구))+geom_col()+geom_text(aes(label=자치구,hjust=0.2,size=1))+
+  coord_flip()
+```
+
+
+# Top10 구분별 비교(바 그래프)
+```{r bar}
+df3$범죄발생=df3$범죄발생*(-1)
+ggplot(df3,aes(x=reorder(자치구,desc(초등학교)),y=초등학교,fill=자치구))+geom_col()
+
+ggplot(df3,aes(x=reorder(자치구,desc(유치원)),y=유치원,fill=자치구))+geom_col()
+
+ggplot(df3,aes(x=reorder(자치구,desc(병원)),y=병원,fill=자치구))+geom_col()
+
+ggplot(df3,aes(x=reorder(자치구,desc(응급실)),y=응급실,fill=자치구))+geom_col()
+
+ggplot(df3,aes(x=reorder(자치구,desc(범죄발생)),y=범죄발생,fill=자치구))+geom_col()
+
+ggplot(df3,aes(x=reorder(자치구,desc(유통시설)),y=유통시설,fill=자치구))+geom_col()
+
+ggplot(df3,aes(x=reorder(자치구,desc(대중교통)),y=대중교통,fill=자치구))+geom_col()
+
+ggplot(df3,aes(x=reorder(자치구,desc(공원)),y=공원,fill=자치구))+geom_col()
+
+```
+
+# Top10 구분별 비교(파이 그래프)
+```{r pi}
+pi2(df3,df3$자치구,df3$초등학교)+labs(fill='초등학교')
+
+pi2(df3,df3$자치구,df3$유치원)+labs(fill='유치원')
+
+pi2(df3,df3$자치구,df3$병원)+labs(fill='병원')
+
+pi2(df3,df3$자치구,df3$응급실)+labs(fill='응급실')
+
+pi2(df3,df3$자치구,df3$유통시설)+labs(fill='유통시설')
+
+pi2(df3,df3$자치구,df3$대중교통)+labs(fill='대중교통')
+
+pi2(df3,df3$자치구,df3$공원)+labs(fill='공원')
+```
